@@ -1,0 +1,53 @@
+[package]
+name = "rust-learning"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# 基础依赖（无外部crate）
+rand = "0.8"
+
+# 可选依赖（通过特性标志启用）
+tokio = { version = "1.35", features = ["full"], optional = true }
+serde = { version = "1.0", features = ["derive"], optional = true }
+serde_json = { version = "1.0", optional = true }
+futures = { version = "0.3", optional = true }
+axum = { version = "0.7", optional = true }
+sqlx = { version = "0.7", features = ["postgres", "runtime-tokio"], optional = true }
+chrono = { version = "0.4", optional = true }
+
+# 特性标志，用于选择性编译
+[features]
+default = []
+async = ["tokio", "futures"]
+web = ["tokio", "axum", "serde", "serde_json", "chrono"]
+db = ["tokio", "sqlx", "serde", "serde_json"]
+all = ["async", "web", "db"]
+
+[[bin]]
+name = "basic"
+path = "src/bin/basic.rs"
+
+[[bin]]
+name = "async"
+path = "src/bin/async.rs"
+required-features = ["async"]
+
+[[bin]]
+name = "web"
+path = "src/bin/web.rs"
+required-features = ["web"]
+
+[[bin]]
+name = "db"
+path = "src/bin/db.rs"
+required-features = ["db"]
+
+[[bin]]
+name = "all"
+path = "src/bin/all.rs"
+required-features = ["all"]
+
+[lib]
+name = "rust_learning"
+path = "src/lib.rs"

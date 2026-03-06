@@ -1,0 +1,42 @@
+# Cargo 配置文件
+# 配置清华源以加速依赖下载
+
+[source.crates-io]
+replace-with = 'tuna'
+
+[source.tuna]
+registry = "https://mirrors.tuna.tsinghua.edu.cn/git/crates.io-index.git"
+
+# sparse registry 配置（更快）
+[registries.tuna]
+index = "sparse+https://mirrors.tuna.tsinghua.edu.cn/crates.io-index/"
+
+# 构建配置
+[build]
+# jobs = 0  # 注释掉，使用默认值
+
+# 配置警告
+[term]
+color = "always"
+
+# 配置 sparse registry（推荐用于中国大陆）
+[registries.crates-io]
+index = "sparse+https://mirrors.tuna.tsinghua.edu.cn/crates.io-index/"
+
+# 配置优化级别
+[profile.dev]
+opt-level = 0
+debug = true
+debug-assertions = true
+overflow-checks = true
+lto = false
+panic = "unwind"
+
+[profile.release]
+opt-level = 3
+debug = false
+debug-assertions = false
+overflow-checks = false
+lto = true
+panic = "abort"
+codegen-units = 1
