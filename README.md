@@ -238,6 +238,16 @@ registry = "https://mirrors.163.com/git/crates.io-index.git"
 
 配置完成后，请查看 [SETUP_SUMMARY.md](SETUP_SUMMARY.md) 了解配置详情。
 
+## 快速开始
+
+查看 [QUICK_START.md](QUICK_START.md) 获取快速开始指南，包括：
+
+- 如何运行所有示例
+- Box 和 dyn 用法示例
+- Unsafe 代码示例
+- 常用命令速查
+- 学习路径建议
+
 ### 编译和运行
 
 ```bash
