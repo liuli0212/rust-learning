@@ -3,6 +3,12 @@
 //! 这个库包含了从基础到高级的Rust编程示例，
 //! 特别针对有C++经验的开发者设计。
 
+// 导出过程宏
+pub use cli_macro::Parser;
+
+// 导出 ParseError 供 proc macro 使用
+pub use cli_parser::ParseError;
+
 pub mod basics;
 pub mod cpp_comparison;
 pub mod concurrency;
@@ -10,6 +16,7 @@ pub mod advanced;
 pub mod macro_demo;
 pub mod error_handling;
 pub mod unsafe_examples;
+pub mod cli_parser;
 
 #[cfg(feature = "async")]
 pub mod async_programming;
@@ -31,6 +38,7 @@ pub use advanced::run_examples as advanced_run_examples;
 pub use macro_demo::run_examples as macro_demo_run_examples;
 pub use error_handling::run_examples as error_handling_run_examples;
 pub use unsafe_examples::run_examples as unsafe_examples_run_examples;
+pub use cli_parser::run_examples as cli_parser_run_examples;
 
 #[cfg(feature = "async")]
 pub use async_programming::run_examples as async_programming_run_examples;

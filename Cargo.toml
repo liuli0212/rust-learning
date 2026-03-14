@@ -12,14 +12,18 @@ tokio = { version = "1.35", features = ["full"], optional = true }
 serde = { version = "1.0", features = ["derive"], optional = true }
 serde_json = { version = "1.0", optional = true }
 futures = { version = "0.3", optional = true }
+async-trait = { version = "0.1", optional = true }
 axum = { version = "0.7", optional = true }
 sqlx = { version = "0.7", features = ["postgres", "runtime-tokio"], optional = true }
 chrono = { version = "0.4", optional = true }
 
+# 过程宏依赖
+cli_macro = { path = "./cli_macro" }
+
 # 特性标志，用于选择性编译
 [features]
 default = []
-async = ["tokio", "futures"]
+async = ["tokio", "futures", "async-trait"]
 web = ["tokio", "axum", "serde", "serde_json", "chrono"]
 db = ["tokio", "sqlx", "serde", "serde_json"]
 all = ["async", "web", "db"]
@@ -47,6 +51,11 @@ required-features = ["db"]
 name = "all"
 path = "src/bin/all.rs"
 required-features = ["all"]
+
+[[bin]]
+name = "cli"
+path = "src/bin/cli/main.rs"
+dependencies = ["cli_macro"]
 
 [lib]
 name = "rust_learning"
