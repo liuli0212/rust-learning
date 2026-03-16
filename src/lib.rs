@@ -50,4 +50,7 @@ pub use async_call_sync::run_examples as async_call_sync_run_examples;
 pub use web_server::run_examples as web_server_run_examples;
 
 #[cfg(feature = "db")]
-pub use database::run_examples as database_run_examples;
+pub use database::run_examples as database_run_examples;pub mod memory_layout; pub use memory_layout::run_examples as memory_layout_run_examples;
+pub mod advanced_types; pub use advanced_types::run_examples as advanced_types_run_examples;
+pub mod smart_pointers; pub use smart_pointers::run_examples as smart_pointers_run_examples;
+pub mod ffi_cxx; pub use ffi_cxx::run_examples as ffi_cxx_run_examples; pub mod observability; pub use observability::run_examples as observability_run_examples;

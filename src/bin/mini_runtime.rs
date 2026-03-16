@@ -27,6 +27,9 @@ use std::thread;
  *    - 当 `Reactor` 线程监听到网络事件时，调用 `waker.wake()`。
  *    - `Waker` 会通过 `executor_tx` 将整个 `Task`（包含最外层 Future）重新送回 
  *      `Executor` 的就绪队列，触发下一轮从顶至下的 poll。
+ * 
+ * 
+ * Logic架构和时序图: @runtime_architecture.md
  */
 
 /// --- 1. 任务 (Task) ---
