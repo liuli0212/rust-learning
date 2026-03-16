@@ -6,6 +6,8 @@ edition = "2021"
 [dependencies]
 # 基础依赖（无外部crate）
 rand = "0.8"
+mio = { version = "0.8", features = ["os-poll", "net"] }
+crossbeam-channel = "0.5"
 
 # 可选依赖（通过特性标志启用）
 tokio = { version = "1.35", features = ["full"], optional = true }
@@ -56,6 +58,10 @@ required-features = ["all"]
 name = "cli"
 path = "src/bin/cli/main.rs"
 dependencies = ["cli_macro"]
+
+[[bin]]
+name = "mini-runtime"
+path = "src/bin/mini_runtime.rs"
 
 [lib]
 name = "rust_learning"
