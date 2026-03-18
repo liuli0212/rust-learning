@@ -4,13 +4,13 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-# 基础依赖（无外部crate）
+# 基础依赖
 rand = "0.8"
 mio = { version = "0.8", features = ["os-poll", "net"] }
 crossbeam-channel = "0.5"
+tokio = { version = "1.35", features = ["full"] }
 
-# 可选依赖（通过特性标志启用）
-tokio = { version = "1.35", features = ["full"], optional = true }
+# 可选依赖
 serde = { version = "1.0", features = ["derive"], optional = true }
 serde_json = { version = "1.0", optional = true }
 futures = { version = "0.3", optional = true }
@@ -25,12 +25,12 @@ zerocopy = { version = "0.8.42", features = ["derive"] }
 tracing = "0.1.44"
 tracing-subscriber = "0.3.23"
 
-# 特性标志，用于选择性编译
+# 特性标志
 [features]
 default = []
-async = ["tokio", "futures", "async-trait"]
-web = ["tokio", "axum", "serde", "serde_json", "chrono"]
-db = ["tokio", "sqlx", "serde", "serde_json"]
+async = ["futures", "async-trait"]
+web = ["axum", "serde", "serde_json", "chrono"]
+db = ["sqlx", "serde", "serde_json"]
 all = ["async", "web", "db"]
 
 [[bin]]
@@ -66,6 +66,11 @@ dependencies = ["cli_macro"]
 name = "mini-runtime"
 path = "src/bin/mini_runtime.rs"
 
+[[bin]]
+name = "test"
+path = "src/bin/test.rs"
+
 [lib]
 name = "rust_learning"
 path = "src/lib.rs"
+
