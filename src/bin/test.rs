@@ -67,8 +67,44 @@ macro_rules! my_select {
     };
 }
 
+use rust_learning::Builder;
+
+/// 一个使用我们编写的过程宏派生的结构体
+#[derive(Builder, Debug, Clone)]
+struct User {
+    name: String,
+    age: u32,
+    email: String,
+}
+
 #[tokio::main]
 async fn main() {
+    println!("=== 过程宏演示 (Builder 派生) ===");
+
+    // 使用自动生成的 builder() 方法和 UserBuilder 结构体
+    let user_res = User::builder()
+        .name("Alice".to_string())
+        .age(30)
+        .email("alice@example.com".to_string())
+        .build();
+
+    match user_res {
+        Ok(user) => println!("成功构造用户: {:?}", user),
+        Err(e) => println!("构造失败: {}", e),
+    }
+
+    // 演示缺少字段的情况
+    println!("\n演示缺少字段:");
+    let incomplete_user = User::builder()
+        .name("Bob".to_string())
+        // 故意漏掉 age 和 email
+        .build();
+
+    if let Err(e) = incomplete_user {
+        println!("预期的错误: {}", e);
+    }
+
+    println!("\n=== 声明式宏演示 (my_select!) ===");
     // 模拟两个异步任务
     let task_a = async {
         tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
@@ -80,7 +116,6 @@ async fn main() {
         "任务 B 完成"
     };
 
-    // 主人要求的：外面进行 Pin
     // 在 Rust 中，使用 tokio::pin! 或 std::pin::pin! 将 Future 固定在栈上
     tokio::pin!(task_a);
     tokio::pin!(task_b);
@@ -100,4 +135,4 @@ async fn main() {
     };
 
     println!("{}", result);
-}
+    }

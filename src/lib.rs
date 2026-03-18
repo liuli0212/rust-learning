@@ -4,7 +4,7 @@
 //! 特别针对有C++经验的开发者设计。
 
 // 导出过程宏
-pub use cli_macro::Parser;
+pub use cli_macro::{Parser, Builder};
 
 // 导出 ParseError 供 proc macro 使用
 pub use cli_parser::ParseError;

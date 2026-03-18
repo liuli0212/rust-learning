@@ -373,3 +373,90 @@ pub fn derive_parser(input: TokenStream) -> TokenStream {
 
     TokenStream::from(expanded)
 }
+
+/// 具有代表性的过程宏示例：自动化 Builder 模式
+/// 
+/// 这个宏演示了：
+/// 1. 如何遍历结构体字段
+/// 2. 如何操作标识符 (Ident) 和类型 (Type)
+/// 3. 如何生成新的结构体和方法块
+#[proc_macro_derive(Builder)]
+pub fn derive_builder(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as DeriveInput);
+    let name = &input.ident;
+    let builder_name = syn::Ident::new(&format!("{}Builder", name), name.span());
+
+    // 提取结构体数据
+    let fields = match &input.data {
+        syn::Data::Struct(data) => &data.fields,
+        _ => panic!("Builder 宏仅支持结构体"),
+    };
+
+    // 1. 生成 Builder 结构体的字段 (包装在 Option 中)
+    let builder_fields = fields.iter().map(|f| {
+        let name = &f.ident;
+        let ty = &f.ty;
+        quote! { #name: std::option::Option<#ty> }
+    });
+
+    // 2. 生成 Builder 结构体字段的初始化 (默认为 None)
+    let builder_init = fields.iter().map(|f| {
+        let name = &f.ident;
+        quote! { #name: std::option::Option::None }
+    });
+
+    // 3. 生成设置字段的方法 (Setter)
+    let setters = fields.iter().map(|f| {
+        let name = &f.ident;
+        let ty = &f.ty;
+        quote! {
+            pub fn #name(&mut self, #name: #ty) -> &mut Self {
+                self.#name = std::option::Option::Some(#name);
+                self
+            }
+        }
+    });
+
+    // 4. 生成最后的 build() 方法
+    let build_checks = fields.iter().map(|f| {
+        let name = &f.ident;
+        let name_str = name.as_ref().unwrap().to_string();
+        quote! {
+            let #name = self.#name.clone().ok_or_else(|| format!("字段 '{}' 未初始化", #name_str))?;
+        }
+    });
+
+    let field_names = fields.iter().map(|f| &f.ident);
+
+    // 5. 组合生成的代码
+    let expanded = quote! {
+        // 生成辅助 Builder 结构体
+        pub struct #builder_name {
+            #(#builder_fields,)*
+        }
+
+        // 为原结构体添加 builder() 方法
+        impl #name {
+            pub fn builder() -> #builder_name {
+                #builder_name {
+                    #(#builder_init,)*
+                }
+            }
+        }
+
+        // 为 Builder 结构体实现方法
+        impl #builder_name {
+            #(#setters)*
+
+            pub fn build(&self) -> std::result::Result<#name, std::string::String> {
+                #(#build_checks)*
+                
+                std::result::Result::Ok(#name {
+                    #(#field_names),*
+                })
+            }
+        }
+    };
+
+    TokenStream::from(expanded)
+}
