@@ -77,8 +77,7 @@ struct User {
     email: String,
 }
 
-#[tokio::main]
-async fn main() {
+async fn test_self_with_macro() {
     println!("=== 过程宏演示 (Builder 派生) ===");
 
     // 使用自动生成的 builder() 方法和 UserBuilder 结构体
@@ -135,4 +134,38 @@ async fn main() {
     };
 
     println!("{}", result);
-    }
+}
+
+#[tokio::main]
+async fn main() {
+    // 模拟两个异步任务
+    let task_a = async {
+        tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
+        "任务 A 完成"
+    };
+
+    let task_b = async {
+        tokio::time::sleep(tokio::time::Duration::from_millis(50)).await;
+        "任务 B 完成"
+    };
+
+    // 在 Rust 中，使用 tokio::pin! 或 std::pin::pin! 将 Future 固定在栈上
+    tokio::pin!(task_a);
+    tokio::pin!(task_b);
+
+    println!("正在等待任务...");
+
+    // 使用我们自己定义的宏
+    let result = tokio::select! {
+        val_a = task_a => { 
+            println!("分支 A 的 Future 已经完成了，准备处理结果...");
+            format!("分支 A 赢了: {}", val_a) 
+        },
+        val_b = task_b => {
+            println!("分支 B 的 Future 已经完成了，准备处理结果...");
+            format!("分支 B 赢了: {}", val_b) 
+        },
+    };
+
+    println!("{}", result);
+}
